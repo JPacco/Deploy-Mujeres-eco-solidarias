@@ -1,0 +1,38 @@
+# version: "3.9"
+
+networks:
+  ms-network:
+    driver: bridge
+
+services:
+  ms-administrador:
+    build:
+      context: ./ms-administrador
+      dockerfile: Dockerfile
+    container_name: ms-administrador
+    ports:
+      - "84:80"
+    networks:
+      - ms-network
+
+  ms-notificador:
+    build:
+      context: ./ms-notificador
+      dockerfile: Dockerfile
+    container_name: ms-notificador
+    ports:
+      - "85:80"
+    networks:
+      - ms-network
+
+  ms-mensajeria:
+    build:
+      context: ./ms-mensajeria
+      dockerfile: Dockerfile
+    container_name: ms-mensajeria
+    ports:
+      - "87:80"
+     # - "8878:8878"
+    networks:
+      - ms-network
+  
