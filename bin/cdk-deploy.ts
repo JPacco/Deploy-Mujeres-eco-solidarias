@@ -15,4 +15,4 @@ new MainStack(app, 'CdkDeployStack', {
 cdk.Tags.of(app).add('project', process.env.PROJECT as string);
 cdk.Tags.of(app).add('env', process.env.ENV as string);
 cdk.Tags.of(app).add('owner', process.env.OWNER as string);
-cdk.Tags.of(app).add('rol', process.env.ROL as string);
+// cdk.Tags.of(app).add('rol', process.env.ROL as string);
