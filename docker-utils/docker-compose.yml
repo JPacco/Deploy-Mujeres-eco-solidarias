@@ -45,6 +45,8 @@ services:
       - "8101:80"
     networks:
       - ms-network
+    environment:
+      - URL_HOST_LOCAL=localhost
 
   client-email:
     build:
@@ -55,7 +57,9 @@ services:
       - "8100:80"
     networks:
       - ms-network
-  
+    environment:
+      - URL_HOST_LOCAL=localhost
+
   client-reporte:
     build:
       context: ./services/client-reporte
@@ -65,6 +69,8 @@ services:
       - "8108:80"
     networks:
       - ms-network
+    environment:
+      - URL_HOST_LOCAL=localhost
 
   client-trx:
     build:
@@ -75,6 +81,8 @@ services:
       - "8103:80"
     networks:
       - ms-network
+    environment:
+      - URL_HOST_LOCAL=localhost
 
   client-service:
     build:
@@ -85,3 +93,5 @@ services:
       - "8102:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
     networks:
       - ms-network
+    environment:
+      - URL_HOST_LOCAL=localhost
