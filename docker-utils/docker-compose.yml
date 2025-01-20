@@ -11,7 +11,7 @@ services:
       dockerfile: Dockerfile
     container_name: ms-administrador
     ports:
-      - "84:80"
+      - "8104:80"
     networks:
       - ms-network
 
@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: ms-notificador
     ports:
-      - "85:80"
+      - "8107:80"
     networks:
       - ms-network
 
@@ -31,8 +31,57 @@ services:
       dockerfile: Dockerfile
     container_name: ms-mensajeria
     ports:
-      - "87:80"
-     # - "8878:8878"
+      - "8105:80"
+      - "8878:8878" # apertura de puerto para socket
+    networks:
+      - ms-network
+
+  client-oauth:
+    build:
+      context: ./services/client-oauth
+      dockerfile: Dockerfile
+    container_name: client-oauth
+    ports:
+      - "8101:80"
+    networks:
+      - ms-network
+
+  client-email:
+    build:
+      context: ./services/client-email
+      dockerfile: Dockerfile
+    container_name: client-email
+    ports:
+      - "8100:80"
     networks:
       - ms-network
   
+  client-reporte:
+    build:
+      context: ./services/client-reporte
+      dockerfile: Dockerfile
+    container_name: client-reporte
+    ports:
+      - "8108:80"
+    networks:
+      - ms-network
+
+  client-trx:
+    build:
+      context: ./services/client-trx
+      dockerfile: Dockerfile
+    container_name: client-trx
+    ports:
+      - "8103:80"
+    networks:
+      - ms-network
+
+  client-service:
+    build:
+      context: ./services/client-service
+      dockerfile: Dockerfile
+    container_name: client-service
+    ports:
+      - "8102:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
+    networks:
+      - ms-network
