@@ -3,15 +3,17 @@ import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as iam from "aws-cdk-lib/aws-iam";
 
-export class backend extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+export interface backendProps {}
+
+export class Backend extends Construct {
+  constructor(scope: Construct, id: string, props: backendProps) {
+    super(scope, id);
 
     // Creacion de VPC
     const vpc = new ec2.Vpc(this, "VPC", {
       // vpcName: 'VPC',
       ipAddresses: ec2.IpAddresses.cidr("10.10.0.0/16"),
-      natGateways: 1,
+      // natGateways: 1,
       availabilityZones: ["us-east-1a", "us-east-1b"],
       subnetConfiguration: [
         {
@@ -22,7 +24,7 @@ export class backend extends cdk.Stack {
         {
           cidrMask: 24,
           name: "Private",
-          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
         },
       ],
       restrictDefaultSecurityGroup: false,
@@ -33,6 +35,12 @@ export class backend extends cdk.Stack {
       vpc: vpc,
       allowAllOutbound: true,
     });
+
+    securityGroup.addIngressRule(
+      ec2.Peer.prefixList("pl-3b927c52"),
+      ec2.Port.allTcp(),
+      "Allow traffic from cloudfront"
+    );
 
     //Creacion de Rol
     const role = new iam.Role(this, "Role", {
@@ -48,24 +56,6 @@ export class backend extends cdk.Stack {
       ],
     });
 
-    // Creacion de instacia
-    // const instance = new ec2.Instance(this, "Instance", {
-    //   vpc: vpc,
-    //   instanceType: ec2.InstanceType.of(
-    //     ec2.InstanceClass.R6G,
-    //     ec2.InstanceSize.MEDIUM
-    //   ),
-    //   machineImage: new ec2.AmazonLinuxImage({
-    //     generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2023,
-    //     cpuType: ec2.AmazonLinuxCpuType.ARM_64,
-    //   }),
-    //   securityGroup: securityGroup,
-    //   role: role,
-    //   vpcSubnets: {
-    //     subnets: vpc.publicSubnets,
-    //   },
-    // });
-
     //Creacion de instacia t3-medium
     const instancet3 = new ec2.Instance(this, "Instance-t3", {
       vpc: vpc,
@@ -73,8 +63,9 @@ export class backend extends cdk.Stack {
         ec2.InstanceClass.T3,
         ec2.InstanceSize.MEDIUM
       ),
-      machineImage: new ec2.AmazonLinuxImage({
-        generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2023,
+
+      machineImage: ec2.MachineImage.genericLinux({
+        "us-east-1": "ami-07fedd8f3ba615432",
       }),
       securityGroup: securityGroup,
       role: role,
@@ -82,12 +73,6 @@ export class backend extends cdk.Stack {
         subnets: vpc.publicSubnets,
       },
     });
-
-    // Habilitar IP pública explícitamente (aunque ya se habilitó en la subnet)
-    // new cdk.CfnOutput(this, "InstancePublicIp", {
-    //   value: instance.instancePublicIp,
-    //   description: "IP pública de la instancia EC2",
-    // });
 
     //Habilitar IP pública explícitamente (aunque ya se habilitó en la subnet)
     new cdk.CfnOutput(this, "InstancePublicIp-t3", {
