@@ -49,10 +49,28 @@ export class backend extends cdk.Stack {
     });
 
     // Creacion de instacia
-    const instance = new ec2.Instance(this, "Instance", {
+    // const instance = new ec2.Instance(this, "Instance", {
+    //   vpc: vpc,
+    //   instanceType: ec2.InstanceType.of(
+    //     ec2.InstanceClass.R6G,
+    //     ec2.InstanceSize.MEDIUM
+    //   ),
+    //   machineImage: new ec2.AmazonLinuxImage({
+    //     generation: ec2.AmazonLinuxGeneration.AMAZON_LINUX_2023,
+    //     cpuType: ec2.AmazonLinuxCpuType.ARM_64,
+    //   }),
+    //   securityGroup: securityGroup,
+    //   role: role,
+    //   vpcSubnets: {
+    //     subnets: vpc.publicSubnets,
+    //   },
+    // });
+
+    //Creacion de instacia t3-medium
+    const instancet3 = new ec2.Instance(this, "Instance-t3", {
       vpc: vpc,
       instanceType: ec2.InstanceType.of(
-        ec2.InstanceClass.R6G,
+        ec2.InstanceClass.T3,
         ec2.InstanceSize.MEDIUM
       ),
       machineImage: new ec2.AmazonLinuxImage({
@@ -66,8 +84,14 @@ export class backend extends cdk.Stack {
     });
 
     // Habilitar IP pública explícitamente (aunque ya se habilitó en la subnet)
-    new cdk.CfnOutput(this, "InstancePublicIp", {
-      value: instance.instancePublicIp,
+    // new cdk.CfnOutput(this, "InstancePublicIp", {
+    //   value: instance.instancePublicIp,
+    //   description: "IP pública de la instancia EC2",
+    // });
+
+    //Habilitar IP pública explícitamente (aunque ya se habilitó en la subnet)
+    new cdk.CfnOutput(this, "InstancePublicIp-t3", {
+      value: instancet3.instancePublicIp,
       description: "IP pública de la instancia EC2",
     });
   }

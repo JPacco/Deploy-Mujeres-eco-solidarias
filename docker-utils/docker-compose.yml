@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - "/data/postgres:/var/lib/postgresql/data"
+      - "dbdata:/var/lib/postgresql/data"
     container_name: database
 
   ms-administrador:
@@ -110,3 +110,7 @@ services:
       - "8102:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
     environment:
       - URL_HOST_LOCAL=localhost
+
+volumes:
+  dbdata:  
+    external: true
