@@ -1,97 +1,112 @@
 # version: "3.9"
 
-networks:
-  ms-network:
-    driver: bridge
 
 services:
+  database:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=db_recicla_ila
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "/data/postgres:/var/lib/postgresql/data"
+    container_name: database
+
   ms-administrador:
     build:
-      context: ./ms-administrador
+      context: /home/ssm-user/ms-administrador
       dockerfile: Dockerfile
     container_name: ms-administrador
     ports:
       - "8104:80"
-    networks:
-      - ms-network
+    environment:
+      - HOST=database
+      - PORT_DB=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
 
   ms-notificador:
     build:
-      context: ./ms-notificador
+      context: /home/ssm-user/ms-notificador
       dockerfile: Dockerfile
     container_name: ms-notificador
     ports:
       - "8107:80"
-    networks:
-      - ms-network
+    environment:
+      - HOST=database
+      - PORT_DB=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
 
   ms-mensajeria:
     build:
-      context: ./ms-mensajeria
+      context: /home/ssm-user/ms-mensajeria
       dockerfile: Dockerfile
     container_name: ms-mensajeria
     ports:
       - "8105:80"
       - "8878:8878" # apertura de puerto para socket
-    networks:
-      - ms-network
+    environment:
+      - HOST=database
+      - PORT_DB=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
 
   client-oauth:
     build:
-      context: ./services/client-oauth
+      context: /home/ssm-user/services/client-oauth
       dockerfile: Dockerfile
     container_name: client-oauth
     ports:
       - "8101:80"
-    networks:
-      - ms-network
     environment:
       - URL_HOST_LOCAL=localhost
 
   client-email:
     build:
-      context: ./services/client-email
+      context: /home/ssm-user/services/client-email
       dockerfile: Dockerfile
     container_name: client-email
     ports:
       - "8100:80"
-    networks:
-      - ms-network
     environment:
-      - URL_HOST_LOCAL=localhost
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_DISPLAY_MAIL=tec.cuper@gmail.com
+      - SPRING_MAIL_USERNAME=tec.cuper@gmail.com
+      - SPRING_MAIL_PASSWORD=kcwrpscwaogrnzrx
 
   client-reporte:
     build:
-      context: ./services/client-reporte
+      context: /home/ssm-user/services/client-reporte
       dockerfile: Dockerfile
     container_name: client-reporte
     ports:
       - "8108:80"
-    networks:
-      - ms-network
     environment:
       - URL_HOST_LOCAL=localhost
 
   client-trx:
     build:
-      context: ./services/client-trx
+      context: /home/ssm-user/services/client-trx
       dockerfile: Dockerfile
     container_name: client-trx
     ports:
       - "8103:80"
-    networks:
-      - ms-network
     environment:
       - URL_HOST_LOCAL=localhost
+      - HOST=database
+      - PORT_DB=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
 
   client-service:
     build:
-      context: ./services/client-service
+      context: /home/ssm-user/services/client-service
       dockerfile: Dockerfile
     container_name: client-service
     ports:
       - "8102:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
-    networks:
-      - ms-network
     environment:
       - URL_HOST_LOCAL=localhost
