@@ -6,8 +6,8 @@ services:
     image: postgres:16
     environment:
       - POSTGRES_DB=db_recicla_ila
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=usr_recicla
+      - POSTGRES_PASSWORD=<>
     ports:
       - "5432:5432"
     volumes:
@@ -24,8 +24,8 @@ services:
     environment:
       - HOST=database
       - PORT_DB=5432
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_USERNAME=usr_recicla
+      - DATABASE_PASSWORD=<>
 
   ms-notificador:
     build:
@@ -37,8 +37,8 @@ services:
     environment:
       - HOST=database
       - PORT_DB=5432
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_USERNAME=usr_recicla
+      - DATABASE_PASSWORD=<>
 
   ms-mensajeria:
     build:
@@ -51,8 +51,8 @@ services:
     environment:
       - HOST=database
       - PORT_DB=5432
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_USERNAME=usr_recicla
+      - DATABASE_PASSWORD=<>
 
   client-oauth:
     build:
@@ -62,7 +62,7 @@ services:
     ports:
       - "8101:80"
     environment:
-      - URL_HOST_LOCAL=localhost
+      - URL_HOST_LOCAL=10.10.0.26
 
   client-email:
     build:
@@ -72,10 +72,10 @@ services:
     ports:
       - "8100:80"
     environment:
-      - SPRING_MAIL_HOST=smtp.gmail.com
-      - SPRING_DISPLAY_MAIL=tec.cuper@gmail.com
-      - SPRING_MAIL_USERNAME=tec.cuper@gmail.com
-      - SPRING_MAIL_PASSWORD=kcwrpscwaogrnzrx
+      - SPRING_MAIL_HOST=<>
+      - SPRING_DISPLAY_MAIL=<>
+      - SPRING_MAIL_USERNAME=<>
+      - SPRING_MAIL_PASSWORD=<>
 
   client-reporte:
     build:
@@ -85,7 +85,7 @@ services:
     ports:
       - "8108:80"
     environment:
-      - URL_HOST_LOCAL=localhost
+      - URL_HOST_LOCAL=10.10.0.26
 
   client-trx:
     build:
@@ -95,11 +95,11 @@ services:
     ports:
       - "8103:80"
     environment:
-      - URL_HOST_LOCAL=localhost
+      - URL_HOST_LOCAL=10.10.0.26
       - HOST=database
       - PORT_DB=5432
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_USERNAME=usr_recicla
+      - DATABASE_PASSWORD=<>
 
   client-service:
     build:
@@ -107,10 +107,11 @@ services:
       dockerfile: Dockerfile
     container_name: client-service
     ports:
-      - "8102:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
+      - "7000:80" # no encuentro el puerto a asignar por defecto se asigno el 8102
     environment:
-      - URL_HOST_LOCAL=localhost
+      - URL_HOST_LOCAL=10.10.0.26
+
 
 volumes:
-  dbdata:  
+  dbdata:
     external: true
